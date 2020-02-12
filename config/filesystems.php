@@ -48,9 +48,17 @@ return [
             'root' => storage_path('app'),
         ],
 
+//        'public' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app/public'),
+//            'url' => env('APP_URL').'/storage',
+//            'visibility' => 'public',
+//        ],
+        
+        //在nfs同步windows情况下，无法创建原上传目录的软链到入口目录，这里将上传目录直接设置在入口目录内
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => public_path('storage'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
