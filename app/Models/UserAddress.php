@@ -17,6 +17,9 @@ class UserAddress extends Model
         'last_used_at',
     ];
     protected $dates = ['last_used_at'];
+    
+    // JSON 序列化过程中回下下列属性
+    protected $appends = ['full_address'];
 
     public function user()
     {
