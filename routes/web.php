@@ -65,5 +65,10 @@ Route::group(['prefix' => 't/'], function() {
     Route::get('db', function () {
         dd(DB::select('select * from test'));
     });
+    
+    Route::get('log', function () {
+        
+        \Log::write('error','123');
+    });
 });
 
