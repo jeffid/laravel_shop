@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ class Installment extends Model
     const STATUS_FINISHED = 'finished';
     
     public static $statusMap = [
-        self::STATUS_PENDING  => '未执行',
+        self::STATUS_PENDING => '未执行',
         self::STATUS_REPAYING => '还款中',
         self::STATUS_FINISHED => '已完成',
     ];
@@ -55,7 +56,7 @@ class Installment extends Model
         $prefix = date('YmdHis');
         for ($i = 0; $i < 10; $i++) {
             // 随机生成 6 位的数字
-            $no = $prefix.str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $no = $prefix . str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
             // 判断是否已经存在
             if (!static::query()->where('no', $no)->exists()) {
                 return $no;
@@ -64,5 +65,26 @@ class Installment extends Model
         \Log::warning(sprintf('find installment no failed'));
         
         return false;
+    }
+    
+    /**
+     * 如果全部分期退款成功，则更新订单退款状态
+     */
+    public function refreshRefundStatus()
+    {
+        $allSuccess = true;
+        // 重新加载 items，保证与数据库中数据同步
+        $this->load(['items']);
+        foreach ($this->items as $item) {
+            if ($item->paid_at && $item->refund_status !== InstallmentItem::REFUND_STATUS_SUCCESS) {
+                $allSuccess = false;
+                break;
+            }
+        }
+        if ($allSuccess) {
+            $this->order->update([
+                'refund_status' => Order::REFUND_STATUS_SUCCESS,
+            ]);
+        }
     }
 }
