@@ -69,6 +69,7 @@ class ProductsController extends Controller
             }
         }
         
+        // 分布搜索
         // 定义一个数组
         $propertyFilters = [];
         // 从用户请求参数获取 filters
@@ -89,8 +90,7 @@ class ProductsController extends Controller
                         // 指明 nested 字段
                         'path' => 'properties',
                         'query' => [
-                            ['term' => ['properties.name' => $name]],
-                            ['term' => ['properties.value' => $value]],
+                            ['term' => ['properties.search_value' => $filter]],
                         ],
                     ],
                 ];
