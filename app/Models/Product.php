@@ -96,10 +96,15 @@ class Product extends Model
         $arr['properties'] = $this->properties->map(function (ProductProperty $property) {
             // 对应地增加一个 search_value 字段，用符号 : 将属性名和属性值拼接起来
             return array_merge(array_only($property->toArray(), ['name', 'value']), [
-                'search_value' => $property->name.':'.$property->value,
+                'search_value' => $property->name . ':' . $property->value,
             ]);
         });
         
         return $arr;
+    }
+    
+    public function scopeByIds($query, $ids)
+    {
+        return $query->whereIn('id', $ids)->orderByRaw(sprintf("FIND_IN_SET(id, '%s')", join(',', $ids)));
     }
 }
