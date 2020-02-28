@@ -230,6 +230,8 @@ return [
     
     // 订单自动过期时间，秒
     'order_ttl' => 1800,
+    // 秒杀订单的过期时间，秒
+    'seckill_order_ttl' => 600,
     
     'ngrok_url' => env('NGROK_URL'),
     

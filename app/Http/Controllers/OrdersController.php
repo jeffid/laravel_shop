@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\CrowdFundingOrderRequest;
 use App\Models\ProductSku;
+use App\Http\Requests\SeckillOrderRequest;
 
 class OrdersController extends Controller
 {
@@ -27,16 +28,16 @@ class OrdersController extends Controller
             ->where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate();
-
+        
         return view('orders.index', ['orders' => $orders]);
     }
-
+    
     public function store(OrderRequest $request, OrderService $orderService)
     {
-        $user    = $request->user();
+        $user = $request->user();
         $address = UserAddress::find($request->input('address_id'));
-        $coupon  = null;
-
+        $coupon = null;
+        
         // 如果用户提交了优惠码
         if ($code = $request->input('coupon_code')) {
             $coupon = CouponCode::where('code', $code)->first();
@@ -47,30 +48,30 @@ class OrdersController extends Controller
         // 参数中加入 $coupon 变量
         return $orderService->store($user, $address, $request->input('remark'), $request->input('items'), $coupon);
     }
-
+    
     public function show(Order $order, Request $request)
     {
         $this->authorize('own', $order);
-
+        
         return view('orders.show', ['order' => $order->load(['items.productSku', 'items.product'])]);
     }
-
+    
     public function received(Order $order, Request $request)
     {
         // 校验权限
         $this->authorize('own', $order);
-
+        
         // 判断订单的发货状态是否为已发货
         if ($order->ship_status !== Order::SHIP_STATUS_DELIVERED) {
             throw new InvalidRequestException('发货状态不正确');
         }
-
+        
         // 更新发货状态为已收到
         $order->update(['ship_status' => Order::SHIP_STATUS_RECEIVED]);
-
+        
         return $order;
     }
-
+    
     public function review(Order $order)
     {
         // 校验权限
@@ -82,7 +83,7 @@ class OrdersController extends Controller
         // 使用 load 方法加载关联数据，避免 N + 1 性能问题
         return view('orders.review', ['order' => $order->load(['items.productSku', 'items.product'])]);
     }
-
+    
     public function sendReview(Order $order, SendReviewRequest $request)
     {
         // 校验权限
@@ -102,8 +103,8 @@ class OrdersController extends Controller
                 $orderItem = $order->items()->find($review['id']);
                 // 保存评分和评价
                 $orderItem->update([
-                    'rating'      => $review['rating'],
-                    'review'      => $review['review'],
+                    'rating' => $review['rating'],
+                    'review' => $review['review'],
                     'reviewed_at' => Carbon::now(),
                 ]);
             }
@@ -111,10 +112,18 @@ class OrdersController extends Controller
             $order->update(['reviewed' => true]);
             event(new OrderReviewed($order));
         });
-
+        
         return redirect()->back();
     }
-
+    
+    /**
+     * 申请退款
+     * @param Order $order
+     * @param ApplyRefundRequest $request
+     * @return Order
+     * @throws InvalidRequestException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function applyRefund(Order $order, ApplyRefundRequest $request)
     {
         // 校验订单是否属于当前用户
@@ -123,7 +132,7 @@ class OrdersController extends Controller
         if (!$order->paid_at) {
             throw new InvalidRequestException('该订单未支付，不可退款');
         }
-    
+        
         // 众筹订单不允许申请退款
         if ($order->type === Order::TYPE_CROWDFUNDING) {
             throw new InvalidRequestException('众筹订单不支持退款');
@@ -134,25 +143,45 @@ class OrdersController extends Controller
             throw new InvalidRequestException('该订单已经申请过退款，请勿重复申请');
         }
         // 将用户输入的退款理由放到订单的 extra 字段中
-        $extra                  = $order->extra ?: [];
+        $extra = $order->extra ?: [];
         $extra['refund_reason'] = $request->input('reason');
         // 将订单退款状态改为已申请退款
         $order->update([
             'refund_status' => Order::REFUND_STATUS_APPLIED,
-            'extra'         => $extra,
+            'extra' => $extra,
         ]);
-
+        
         return $order;
     }
     
-    // 创建一个新的方法用于接受众筹商品下单请求
+    /**
+     * 接受众筹商品下单请求
+     * @param CrowdFundingOrderRequest $request
+     * @param OrderService $orderService
+     * @return mixed
+     */
     public function crowdfunding(CrowdFundingOrderRequest $request, OrderService $orderService)
     {
-        $user    = $request->user();
-        $sku     = ProductSku::find($request->input('sku_id'));
+        $user = $request->user();
+        $sku = ProductSku::find($request->input('sku_id'));
         $address = UserAddress::find($request->input('address_id'));
-        $amount  = $request->input('amount');
+        $amount = $request->input('amount');
         
         return $orderService->crowdfunding($user, $address, $sku, $amount);
+    }
+    
+    /**
+     * 秒杀
+     * @param SeckillOrderRequest $request
+     * @param OrderService $orderService
+     * @return mixed
+     */
+    public function seckill(SeckillOrderRequest $request, OrderService $orderService)
+    {
+        $user = $request->user();
+        $address = UserAddress::find($request->input('address_id'));
+        $sku = ProductSku::find($request->input('sku_id'));
+        
+        return $orderService->seckill($user, $address, $sku);
     }
 }

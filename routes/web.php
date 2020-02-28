@@ -54,6 +54,9 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
     Route::get('installments/{installment}', 'InstallmentsController@show')->name('installments.show');
     Route::get('installments/{installment}/alipay', 'InstallmentsController@payByAlipay')->name('installments.alipay');
     Route::get('installments/alipay/return', 'InstallmentsController@alipayReturn')->name('installments.alipay.return');
+    
+    // 秒杀
+    Route::post('seckill_orders', 'OrdersController@seckill')->name('seckill_orders.store');
 });
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 // 后端回调不能放在 auth 中间件中
