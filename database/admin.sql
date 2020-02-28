@@ -21,7 +21,7 @@
 
 LOCK TABLES `admin_menu` WRITE;
 /*!40000 ALTER TABLE `admin_menu` DISABLE KEYS */;
-INSERT INTO `admin_menu` VALUES (1,0,1,'首页','fa-bar-chart','/',NULL,NULL,'2019-04-20 08:46:24'),(2,0,9,'系统管理','fa-tasks',NULL,NULL,NULL,'2020-02-14 02:00:14'),(3,2,10,'管理员','fa-users','auth/users',NULL,NULL,'2020-02-14 02:00:14'),(4,2,11,'角色','fa-user','auth/roles',NULL,NULL,'2020-02-14 02:00:14'),(5,2,12,'权限','fa-ban','auth/permissions',NULL,NULL,'2020-02-14 02:00:14'),(6,2,13,'菜单','fa-bars','auth/menu',NULL,NULL,'2020-02-14 02:00:14'),(7,2,14,'操作日志','fa-history','auth/logs',NULL,NULL,'2020-02-14 02:00:14'),(8,0,4,'商品管理','fa-cubes','/products',NULL,'2019-04-20 08:44:59','2020-02-13 02:19:13'),(9,0,2,'用户管理','fa-users','/users',NULL,'2019-04-20 08:45:14','2019-04-20 08:50:34'),(10,0,7,'订单管理','fa-rmb','/orders',NULL,'2019-04-20 08:45:25','2020-02-14 02:00:14'),(11,0,8,'优惠券管理','fa-tags','/coupon_codes',NULL,'2019-04-20 08:45:39','2020-02-14 02:00:14'),(12,0,3,'类目管理','fa-bars','/categories',NULL,'2020-02-13 02:18:45','2020-02-13 02:19:13'),(13,8,6,'众筹商品','fa-flag-checkered','/crowdfunding_products',NULL,'2020-02-14 01:56:42','2020-02-14 02:00:14'),(14,8,5,'普通商品','fa-cubes','/products',NULL,'2020-02-14 01:58:24','2020-02-14 02:00:14');
+INSERT INTO `admin_menu` VALUES (1,0,1,'首页','fa-bar-chart','/',NULL,NULL,'2019-04-20 08:46:24'),(2,0,9,'系统管理','fa-tasks',NULL,NULL,NULL,'2020-02-14 02:00:14'),(3,2,10,'管理员','fa-users','auth/users',NULL,NULL,'2020-02-14 02:00:14'),(4,2,11,'角色','fa-user','auth/roles',NULL,NULL,'2020-02-14 02:00:14'),(5,2,12,'权限','fa-ban','auth/permissions',NULL,NULL,'2020-02-14 02:00:14'),(6,2,13,'菜单','fa-bars','auth/menu',NULL,NULL,'2020-02-14 02:00:14'),(7,2,14,'操作日志','fa-history','auth/logs',NULL,NULL,'2020-02-14 02:00:14'),(8,0,4,'商品管理','fa-cubes','/products',NULL,'2019-04-20 08:44:59','2020-02-13 02:19:13'),(9,0,2,'用户管理','fa-users','/users',NULL,'2019-04-20 08:45:14','2019-04-20 08:50:34'),(10,0,7,'订单管理','fa-rmb','/orders',NULL,'2019-04-20 08:45:25','2020-02-14 02:00:14'),(11,0,8,'优惠券管理','fa-tags','/coupon_codes',NULL,'2019-04-20 08:45:39','2020-02-14 02:00:14'),(12,0,3,'类目管理','fa-bars','/categories',NULL,'2020-02-13 02:18:45','2020-02-13 02:19:13'),(13,8,6,'众筹商品','fa-flag-checkered','/crowdfunding_products',NULL,'2020-02-14 01:56:42','2020-02-14 02:00:14'),(14,8,5,'普通商品','fa-cubes','/products',NULL,'2020-02-14 01:58:24','2020-02-14 02:00:14'),(15,8,0,'秒杀商品','fa-bolt','/seckill_products',NULL,'2020-02-28 04:17:39','2020-02-28 04:17:39');
 /*!40000 ALTER TABLE `admin_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,4 +103,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-14 10:23:36
+-- Dump completed on 2020-02-28 12:22:12
