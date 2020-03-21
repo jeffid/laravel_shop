@@ -61,7 +61,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
 Route::get('products/{product}', 'ProductsController@show')->name('products.show');
 
 // 秒杀
-Route::post('seckill_orders', 'OrdersController@seckill')->name('seckill_orders.store');
+Route::post('seckill_orders', 'OrdersController@seckill')->name('seckill_orders.store')->middleware('random_drop:20');
 
 // 后端回调不能放在 auth 中间件中
 Route::post('installments/alipay/notify', 'InstallmentsController@alipayNotify')->name('installments.alipay.notify');
