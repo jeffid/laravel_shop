@@ -231,6 +231,9 @@ class OrderService
             $item->productSku()->associate($sku);
             $item->save();
             
+            // 减少库存数
+            \Redis::decr('seckill_sku_' . $sku->id);
+            
             return $order;
         });
         // 秒杀订单的自动关闭时间与普通订单不同
